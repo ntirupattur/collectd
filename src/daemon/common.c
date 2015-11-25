@@ -46,7 +46,6 @@
 
 /* for getaddrinfo */
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <netdb.h>
 
 #if HAVE_NETINET_IN_H
@@ -257,8 +256,8 @@ ssize_t sread (int fd, void *buf, size_t count)
 
 		assert ((0 > status) || (nleft >= (size_t)status));
 
-		nleft = nleft - status;
-		ptr   = ptr   + status;
+		nleft = nleft - ((size_t) status);
+		ptr   = ptr   + ((size_t) status);
 	}
 
 	return (0);
@@ -284,8 +283,8 @@ ssize_t swrite (int fd, const void *buf, size_t count)
 		if (status < 0)
 			return (status);
 
-		nleft = nleft - status;
-		ptr   = ptr   + status;
+		nleft = nleft - ((size_t) status);
+		ptr   = ptr   + ((size_t) status);
 	}
 
 	return (0);
@@ -356,7 +355,7 @@ int strjoin (char *buffer, size_t buffer_size,
 	}
 
 	assert (buffer[buffer_size - 1] == 0);
-	return (strlen (buffer));
+	return ((int) strlen (buffer));
 }
 
 int strsubstitute (char *str, char c_from, char c_to)
@@ -665,8 +664,8 @@ int check_create_dir (const char *file_orig)
 		 * Join the components together again
 		 */
 		dir[0] = '/';
-		if (strjoin (dir + path_is_absolute, dir_len - path_is_absolute,
-					fields, i + 1, "/") < 0)
+		if (strjoin (dir + path_is_absolute, (size_t) (dir_len - path_is_absolute),
+					fields, (size_t) (i + 1), "/") < 0)
 		{
 			ERROR ("strjoin failed: `%s', component #%i", file_orig, i);
 			return (-1);

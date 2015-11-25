@@ -924,8 +924,7 @@ static value_t csnmp_value_list_to_value (struct variable_list *vl, int type,
     tmp_unsigned = (uint32_t) *vl->val.integer;
     tmp_signed = (int32_t) *vl->val.integer;
 
-    if ((vl->type == ASN_INTEGER)
-        || (vl->type == ASN_GAUGE))
+    if (vl->type == ASN_INTEGER)
       prefer_signed = 1;
 
     DEBUG ("snmp plugin: Parsed int32 value is %"PRIu64".", tmp_unsigned);
@@ -1681,7 +1680,7 @@ static int csnmp_read_value (host_definition_t *host, data_definition_t *data)
 
   if (host->sess_handle == NULL)
   {
-    DEBUG ("snmp plugin: csnmp_read_table: host->sess_handle == NULL");
+    DEBUG ("snmp plugin: csnmp_read_value: host->sess_handle == NULL");
     return (-1);
   }
 
